@@ -8,7 +8,7 @@ jobs:
   deploy:
     name: Deploy to EC2
     runs-on: ubuntu-latest
-    environment: automate  # 🔑 This must match your environment name in GitHub
+    environment: automate
 
     steps:
       - name: Checkout Code
@@ -30,6 +30,7 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: ./task5.terraform
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
@@ -37,5 +38,3 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-
