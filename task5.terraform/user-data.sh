@@ -1,5 +1,8 @@
 #!/bin/bash
-sudo apt update -y
-sudo apt install docker.io -y
+sudo yum update -y
+sudo amazon-linux-extras enable docker
+sudo yum install -y docker
 sudo systemctl start docker
-sudo docker run -d -p 1337:1337 shunnualisha8980/strapi-app
+sudo systemctl enable docker
+sudo docker pull shunnualisha8980/strapi-app:latest
+sudo docker run -d -p 1337:1337 --name strapi-app shunnualisha8980/strapi-app:latest
