@@ -5,7 +5,6 @@ terraform {
       version = "~> 5.0"
     }
   }
-
   required_version = ">= 1.3.0"
 }
 
@@ -13,8 +12,12 @@ provider "aws" {
   region = "us-east-1"
 }
 
+resource "random_id" "ayesha_suffix" {
+  byte_length = 4
+}
+
 resource "aws_security_group" "strapi_sg" {
-  name        = "strapi-sg"
+  name        = "ayesha-strapi-sg-${random_id.ayesha_suffix.hex}"
   description = "Allow port 1337 and SSH access"
 
   ingress {
@@ -51,4 +54,3 @@ resource "aws_instance" "strapi_ec2" {
     Name = "StrapiApp"
   }
 }
-
