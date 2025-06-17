@@ -1,10 +1,21 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+
+  required_version = ">= 1.3.0"
+}
+
 provider "aws" {
-  region = "us-east-1" # Change if needed
+  region = "us-east-1"
 }
 
 resource "aws_security_group" "strapi_sg" {
   name        = "strapi-sg"
-  description = "Allow ports for Strapi and SSH"
+  description = "Allow port 1337 and SSH access"
 
   ingress {
     from_port   = 1337
@@ -17,7 +28,7 @@ resource "aws_security_group" "strapi_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Optional, remove this block to disable SSH access
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -29,16 +40,15 @@ resource "aws_security_group" "strapi_sg" {
 }
 
 resource "aws_instance" "strapi_ec2" {
-  ami           = "ami-0c02fb55956c7d316" # Ubuntu 22.04 LTS
+  ami           = "ami-0c101f26f147fa7fd"  # Amazon Linux 2023
   instance_type = "t2.micro"
-  security_groups = [aws_security_group.strapi_sg.name]
 
-  # Omit key_name to skip SSH access
-  # key_name = "your-key" ← deleted
+  user_data = file("${path.module}/user-data.sh")
 
-  user_data = file("${path.module}/user-data.sh") # Your startup script
+  vpc_security_group_ids = [aws_security_group.strapi_sg.id]
 
   tags = {
-    Name = "StrapiEC2"
+    Name = "StrapiApp"
   }
 }
+
